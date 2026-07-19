@@ -37,7 +37,7 @@ const QUESTIONS_POOL: Question[] = [
   },
   {
     id: 2,
-    question: "What does our favourite Didi say when she calls?",
+    question: "What does our favourite Nikki didi say when she calls?",
     hint: "Obsession",
     answer: "Babu, khana khaye?",
     options: ["Babu, khana khaye?", "Kya re chikni?", "Chalti hai kya 9 se 9.10", "Hey maa mataji"]
@@ -92,9 +92,15 @@ export function AccessScreen({ onAccessGranted }: AccessScreenProps): React.JSX.
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showIntro, setShowIntro] = useState(true);
 
   const shakeAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const handleStartQuiz = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setShowIntro(false);
+  };
 
   useEffect(() => {
     // Select 3 random questions and shuffle their options
@@ -158,7 +164,7 @@ export function AccessScreen({ onAccessGranted }: AccessScreenProps): React.JSX.
       const errors = [
         "Really? Did you crinkle your nose properly?",
         "Ouch! Someone is going to be super judged.",
-        "Incorrect! Try again before Didi gets mad.",
+        "Incorrect! Try again before Nikki didi gets mad.",
         "Mmaaahh! Let's think carefully...",
         "Wrong answer! The hints are there for a reason!"
       ];
@@ -192,100 +198,137 @@ export function AccessScreen({ onAccessGranted }: AccessScreenProps): React.JSX.
           }
         ]}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.lockIconContainer}>
-            <SvgIcon name="heart" size={24} color={COLORS.primary} />
-          </View>
-          <Text style={styles.title}>The Lovers' Vault</Text>
-          <Text style={styles.subtitle}>Answer correctly to unlock Nil & Vidu's Diary</Text>
-        </View>
-
-        {/* Progress Bar */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBackground}>
-            <View 
-              style={[
-                styles.progressBar, 
-                { width: `${((currentIndex + 1) / questions.length) * 100}%` }
-              ]} 
-            />
-          </View>
-          <Text style={styles.progressText}>
-            Question {currentIndex + 1} of {questions.length}
-          </Text>
-        </View>
-
-        {/* Question Text */}
-        <View style={styles.questionSection}>
-          <Text style={styles.questionText}>{currentQ.question}</Text>
-        </View>
-
-        {/* Hint Collapse */}
-        <View style={styles.hintContainer}>
-          <TouchableOpacity 
-            style={styles.hintHeader} 
-            onPress={toggleHint} 
-            activeOpacity={0.7}
-          >
-            <Text style={styles.hintTitle}>Need a Hint?</Text>
-            <Text style={styles.hintToggleIcon}>{showHint ? '−' : '+'}</Text>
-          </TouchableOpacity>
-          {showHint && (
-            <View style={styles.hintBody}>
-              <Text style={styles.hintText}>{currentQ.hint}</Text>
+        {showIntro ? (
+          <View>
+            {/* Header */}
+            <View style={styles.header}>
+               <View style={styles.lockIconContainer}>
+                 <SvgIcon name="heart" size={24} color={COLORS.primary} />
+               </View>
+               <Text style={styles.title}>The Lovers' Vault</Text>
+               <Text style={styles.subtitle}>CLASSIFIED ENTRY GATE</Text>
             </View>
-          )}
-        </View>
 
-        {/* Options List */}
-        <View style={styles.optionsContainer}>
-          {currentQ.options.map((option, idx) => {
-            const isThisSelected = selectedOption === option;
-            let optionStyle: any = styles.optionButton;
-            let textStyle: any = styles.optionText;
+            {/* Quirky Message Section */}
+            <View style={styles.introSection}>
+              <Text style={styles.introHeading}>🚨 CONFIDENTIAL ACCESS 🚨</Text>
+              <Text style={styles.introBody}>
+                You are entering highly sensitive database archives. This journal contains classified letters, cozy diaries, and emotional diagnostics of Nil & Vidu.
+              </Text>
+              <Text style={styles.introQuery}>
+                To prove your identity (and verify you aren't an internet scout, a sibling, or a random hacker), you must answer exactly 3 relationship questions correctly.
+              </Text>
+              <Text style={styles.introQuirk}>
+                Caution: Wrong answers will result in extreme judging and immediate look-of-disapproval from Nikki didi. Speculate at your own risk! 🤫
+              </Text>
+            </View>
 
-            if (isThisSelected) {
-              if (isCorrect) {
-                optionStyle = [styles.optionButton, styles.optionCorrect];
-                textStyle = [styles.optionText, styles.optionTextSelected];
-              } else {
-                optionStyle = [styles.optionButton, styles.optionIncorrect];
-                textStyle = [styles.optionText, styles.optionTextSelected];
-              }
-            }
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={handleStartQuiz}
+              style={styles.continueButton}
+            >
+              <Text style={styles.continueButtonText}>PROCEED TO VAULT</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View>
+            {/* Header */}
+            <View style={styles.header}>
+              <View style={styles.lockIconContainer}>
+                <SvgIcon name="heart" size={24} color={COLORS.primary} />
+              </View>
+              <Text style={styles.title}>The Lovers' Vault</Text>
+              <Text style={styles.subtitle}>Answer correctly to unlock Nil & Vidu's Diary</Text>
+            </View>
 
-            return (
-              <TouchableOpacity
-                key={idx}
-                style={optionStyle}
-                activeOpacity={0.75}
-                onPress={() => handleOptionPress(option)}
+            {/* Progress Bar */}
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBackground}>
+                <View 
+                  style={[
+                    styles.progressBar, 
+                    { width: `${((currentIndex + 1) / questions.length) * 100}%` }
+                  ]} 
+                />
+              </View>
+              <Text style={styles.progressText}>
+                Question {currentIndex + 1} of {questions.length}
+              </Text>
+            </View>
+
+            {/* Question Text */}
+            <View style={styles.questionSection}>
+              <Text style={styles.questionText}>{currentQ.question}</Text>
+            </View>
+
+            {/* Hint Collapse */}
+            <View style={styles.hintContainer}>
+              <TouchableOpacity 
+                style={styles.hintHeader} 
+                onPress={toggleHint} 
+                activeOpacity={0.7}
               >
-                <View style={styles.optionContent}>
-                  <View style={[
-                    styles.radioCircle,
-                    isThisSelected && isCorrect && styles.radioCorrect,
-                    isThisSelected && !isCorrect && styles.radioIncorrect
-                  ]}>
-                    {isThisSelected && (
-                      <View style={[
-                        styles.radioInner,
-                        isCorrect ? styles.radioInnerCorrect : styles.radioInnerIncorrect
-                      ]} />
-                    )}
-                  </View>
-                  <Text style={textStyle}>{option}</Text>
-                </View>
+                <Text style={styles.hintTitle}>Need a Hint?</Text>
+                <Text style={styles.hintToggleIcon}>{showHint ? '−' : '+'}</Text>
               </TouchableOpacity>
-            );
-          })}
-        </View>
+              {showHint && (
+                <View style={styles.hintBody}>
+                  <Text style={styles.hintText}>{currentQ.hint}</Text>
+                </View>
+              )}
+            </View>
 
-        {/* Error Messages */}
-        {errorMsg && (
-          <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{errorMsg}</Text>
+            {/* Options List */}
+            <View style={styles.optionsContainer}>
+              {currentQ.options.map((option, idx) => {
+                const isThisSelected = selectedOption === option;
+                let optionStyle: any = styles.optionButton;
+                let textStyle: any = styles.optionText;
+
+                if (isThisSelected) {
+                  if (isCorrect) {
+                    optionStyle = [styles.optionButton, styles.optionCorrect];
+                    textStyle = [styles.optionText, styles.optionTextSelected];
+                  } else {
+                    optionStyle = [styles.optionButton, styles.optionIncorrect];
+                    textStyle = [styles.optionText, styles.optionTextSelected];
+                  }
+                }
+
+                return (
+                  <TouchableOpacity
+                    key={idx}
+                    style={optionStyle}
+                    activeOpacity={0.75}
+                    onPress={() => handleOptionPress(option)}
+                  >
+                    <View style={styles.optionContent}>
+                      <View style={[
+                        styles.radioCircle,
+                        isThisSelected && isCorrect && styles.radioCorrect,
+                        isThisSelected && !isCorrect && styles.radioIncorrect
+                      ]}>
+                        {isThisSelected && (
+                          <View style={[
+                            styles.radioInner,
+                            isCorrect ? styles.radioInnerCorrect : styles.radioInnerIncorrect
+                          ]} />
+                        )}
+                      </View>
+                      <Text style={textStyle}>{option}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Error Messages */}
+            {errorMsg && (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>{errorMsg}</Text>
+              </View>
+            )}
           </View>
         )}
       </Animated.View>
@@ -499,5 +542,64 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: Platform.OS === 'ios' ? 'Avenir' : 'sans-serif',
     fontWeight: '500',
+  },
+  introSection: {
+    marginVertical: 18,
+    backgroundColor: 'rgba(195, 141, 130, 0.05)',
+    padding: 18,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(195, 141, 130, 0.08)',
+  },
+  introHeading: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.primary,
+    textAlign: 'center',
+    marginBottom: 10,
+    letterSpacing: 1.5,
+  },
+  introBody: {
+    fontSize: 13,
+    color: COLORS.text,
+    textAlign: 'center',
+    lineHeight: 19,
+    marginBottom: 8,
+    fontFamily: Platform.OS === 'ios' ? 'Avenir' : 'sans-serif',
+  },
+  introQuery: {
+    fontSize: 12.5,
+    color: COLORS.text,
+    textAlign: 'center',
+    lineHeight: 18,
+    marginBottom: 8,
+    fontWeight: '500',
+    fontFamily: Platform.OS === 'ios' ? 'Avenir' : 'sans-serif',
+  },
+  introQuirk: {
+    fontSize: 11.5,
+    color: COLORS.textMuted,
+    textAlign: 'center',
+    lineHeight: 17,
+    fontStyle: 'italic',
+    fontFamily: Platform.OS === 'ios' ? 'Avenir' : 'sans-serif',
+  },
+  continueButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  continueButtonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 2,
   },
 });
