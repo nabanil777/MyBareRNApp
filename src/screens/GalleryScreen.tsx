@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Modal,
   Animated,
-  SafeAreaView,
 } from 'react-native';
 import { COLORS } from '../theme/theme';
 import { STORIES_timeline, Memory } from '../data/data';
@@ -127,6 +126,7 @@ export function GalleryScreen(): React.JSX.Element {
             source={item.imageSource ? item.imageSource : { uri: item.imageUrl }}
             style={styles.image}
             resizeMode="cover"
+            resizeMethod="resize"
           />
         </View>
       </TouchableOpacity>
@@ -138,7 +138,7 @@ export function GalleryScreen(): React.JSX.Element {
   const rightColumnItems = STORIES_timeline.filter((_, i) => i % 2 !== 0);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.header}>Gallery</Text>
       <Text style={styles.subHeader}>A curation of our quiet milestones</Text>
 
@@ -176,6 +176,7 @@ export function GalleryScreen(): React.JSX.Element {
                   source={selectedItem.imageSource ? selectedItem.imageSource : { uri: selectedItem.imageUrl }}
                   style={styles.lightboxImage}
                   resizeMode="cover"
+                  resizeMethod="resize"
                 />
               </View>
               <TouchableOpacity style={styles.closeButton} onPress={closeLightbox}>
@@ -185,7 +186,7 @@ export function GalleryScreen(): React.JSX.Element {
           </Animated.View>
         </Modal>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

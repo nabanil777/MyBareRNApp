@@ -7,7 +7,6 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
 import { COLORS } from '../theme/theme';
 
@@ -170,7 +169,7 @@ export function QuotesDeckScreen(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.header}>Love Lab</Text>
         <Text style={styles.subHeader}>Diagnostics & Conflict Resolution Console</Text>
@@ -272,7 +271,7 @@ export function QuotesDeckScreen(): React.JSX.Element {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

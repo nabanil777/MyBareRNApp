@@ -16,12 +16,16 @@ import { LoveTimerScreen } from './src/screens/LoveTimerScreen';
 import { GalleryScreen } from './src/screens/GalleryScreen';
 import { QuotesDeckScreen } from './src/screens/QuotesDeckScreen';
 import { MilestonesScreen } from './src/screens/MilestonesScreen';
+import { AccessScreen } from './src/screens/AccessScreen';
 
 type ScreenTab = 'timer' | 'gallery' | 'quotes' | 'milestones';
 
 function App(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<ScreenTab>('timer');
+  const [showAccess, setShowAccess] = useState(true);
+  
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const accessAnim = useRef(new Animated.Value(1)).current;
 
   const handleTabChange = (tab: ScreenTab) => {
     if (tab === activeTab) return;
@@ -37,6 +41,16 @@ function App(): React.JSX.Element {
         duration: 200,
         useNativeDriver: true,
       }).start();
+    });
+  };
+
+  const handleAccessGranted = () => {
+    Animated.timing(accessAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(() => {
+      setShowAccess(false);
     });
   };
 
@@ -62,12 +76,35 @@ function App(): React.JSX.Element {
       {/* Persistent floating love hearts ambient layer */}
       <FloatingHearts />
 
+      {/* Access Verification Screen Overlay */}
+      {showAccess && (
+        <Animated.View 
+          style={[
+            StyleSheet.absoluteFill,
+            styles.accessOverlay,
+            {
+              opacity: accessAnim,
+              transform: [
+                {
+                  scale: accessAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1.08, 1],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          <AccessScreen onAccessGranted={handleAccessGranted} />
+        </Animated.View>
+      )}
+
       {/* Screen Area */}
-      <View style={styles.screenWrapper}>
+      <SafeAreaView edges={['top']} style={styles.screenWrapper}>
         <Animated.View style={[styles.screenContainer, { opacity: fadeAnim }]}>
           {renderActiveScreen()}
         </Animated.View>
-      </View>
+      </SafeAreaView>
 
       {/* Embedded Floating Navigation Bar */}
       <SafeAreaView edges={['bottom']} style={styles.navigationWrap}>
@@ -182,6 +219,9 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: COLORS.secondary,
+  },
+  accessOverlay: {
+    zIndex: 1000,
   },
 });
 

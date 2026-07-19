@@ -4,7 +4,6 @@ import {
   View,
   Text,
   FlatList,
-  SafeAreaView,
   TouchableOpacity,
   LayoutAnimation,
   Platform,
@@ -67,7 +66,7 @@ export function MilestonesScreen(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.header}>Milestones</Text>
       <Text style={styles.subHeader}>A timeline of our meaningful milestones</Text>
 
@@ -78,7 +77,7 @@ export function MilestonesScreen(): React.JSX.Element {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
